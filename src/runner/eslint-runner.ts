@@ -21,7 +21,7 @@ class EslintRunner {
   checkRunID: number = -1
 
   constructor(githubToken: string, options: ActionOptionsType) {
-    this.octokit.rest = getOctokit(githubToken)
+    this.octokit = getOctokit(githubToken)
     console.log('this.octokit.rest', JSON.stringify(this.octokit.rest))
     this.opts = options
   }
