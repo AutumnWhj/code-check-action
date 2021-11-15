@@ -6,7 +6,7 @@ import {
 } from '../type/eslint-type'
 
 import eslint from 'eslint'
-import github from '@actions/github'
+import {getOctokit} from '@actions/github'
 
 import {error as logError} from '@actions/core'
 import path from 'path'
@@ -21,17 +21,21 @@ class EslintRunner {
   checkRunID: number = -1
 
   constructor(githubToken: string, options: ActionOptionsType) {
-    this.octokit = github.getOctokit(githubToken)
+    this.octokit = getOctokit(githubToken)
     this.opts = options
   }
 
   async run() {
     this.checkRunID = await this.startGitHubCheck()
+    console.log('this.checkRunID', this.checkRunID)
     const report = this.runEslintCheck()!
-    const {success, annotations, counts} = this.prepareAnnotation(report)
+    console.log('report', report)
 
+    const {success, annotations, counts} = this.prepareAnnotation(report)
+    console.log('success, annotations, counts', success, annotations, counts)
     // if annotations are too large, split them into check-updates
     const restOfAnnotation = await this.handleAnnotations(annotations, counts)
+    console.log('restOfAnnotation', restOfAnnotation)
 
     this.finishGitHubCheck(success, restOfAnnotation, counts)
   }
@@ -89,7 +93,7 @@ class EslintRunner {
         started_at: new Date().toISOString(),
         status: 'in_progress'
       })
-
+      console.log('startGitHubCheck', response)
       runId = response.data.id
     } catch (e) {
       const error: any = e
