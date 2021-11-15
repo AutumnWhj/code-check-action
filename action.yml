@@ -1,0 +1,25 @@
+name: 'Code check'
+description: '分支同步：当前分支更新，自动同步到目标分支代码，有合并限制的分支可自动创建一个PR，同时发送更新分支commits信息'
+author: 'Autumn'
+branding:
+  icon: 'git-branch'
+  color: 'green'
+inputs:
+  githubToken:
+    description: 'GitHub token'
+    required: true
+  eslintFiles:
+    required: false
+    description: 'Relative path to files/directories to run lint on.'
+    default: '.'
+  eslintConfig:
+    required: false
+    description: 'Relative path to eslint config. Can either be ".js" config, ".eslintrc" or "package.json".'
+    default: '.eslintrc'
+  eslintExt:
+    required: false
+    description: 'File extension to run linting on.'
+    default: 'js, ts, jsx, tsx'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
