@@ -21,8 +21,8 @@ class EslintRunner {
   checkRunID: number = -1
 
   constructor(githubToken: string, options: ActionOptionsType) {
-    this.octokit = getOctokit(githubToken)
-    console.log('this.octokit', JSON.stringify(this.octokit))
+    this.octokit.rest = getOctokit(githubToken)
+    console.log('this.octokit.rest', JSON.stringify(this.octokit.rest))
     this.opts = options
   }
 
@@ -66,7 +66,7 @@ class EslintRunner {
     counts: ReportCounts
   ) {
     try {
-      await this.octokit.checks.update({
+      await this.octokit.rest.checks.update({
         owner: this.opts.repoOwner,
         repo: this.opts.repoName,
         check_run_id: this.checkRunID,
@@ -86,17 +86,14 @@ class EslintRunner {
   private async startGitHubCheck() {
     let runId = -1
     try {
-      const response = await this.octokit.request(
-        'POST /repos/{owner}/{repo}/check-runs',
-        {
-          owner: 'octocat',
-          repo: 'hello-world',
-          name: 'name',
-          head_sha: 'head_sha',
-          started_at: new Date().toISOString(),
-          status: 'in_progress'
-        }
-      )
+      const response = await this.octokit.rest.checks.create({
+        name: this.name,
+        head_sha: this.opts.prSha,
+        repo: this.opts.repoName,
+        owner: this.opts.repoOwner,
+        started_at: new Date().toISOString(),
+        status: 'in_progress'
+      })
       console.log('startGitHubCheck', response)
       runId = response.data.id
     } catch (e) {
@@ -113,7 +110,7 @@ class EslintRunner {
     counts: ReportCounts
   ) {
     try {
-      await this.octokit.checks.update({
+      await this.octokit.rest.checks.update({
         owner: this.opts.repoOwner,
         repo: this.opts.repoName,
         check_run_id: this.checkRunID,
