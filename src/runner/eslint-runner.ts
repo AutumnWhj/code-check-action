@@ -64,7 +64,6 @@ class EslintRunner {
       await this.octokit.checks.update({
         owner: this.opts.repoOwner,
         repo: this.opts.repoName,
-        // eslint-disable-next-line camelcase
         check_run_id: this.checkRunID,
         status: 'in_progress',
         output: {

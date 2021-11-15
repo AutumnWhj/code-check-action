@@ -1,6 +1,6 @@
 // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
-import core from '@actions/core'
 import {parseInputArray, runEslint} from './check/eslint'
+import core from '@actions/core'
 
 async function run(): Promise<void> {
   try {
