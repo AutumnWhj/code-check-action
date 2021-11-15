@@ -22,6 +22,8 @@ class EslintRunner {
 
   constructor(githubToken: string, options: ActionOptionsType) {
     this.octokit = getOctokit(githubToken)
+    console.log('111111', JSON.stringify(this.octokit))
+    console.log('22222', githubToken)
     console.log('this.octokit.rest', JSON.stringify(this.octokit.rest))
     this.opts = options
   }
