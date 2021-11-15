@@ -85,14 +85,17 @@ class EslintRunner {
   private async startGitHubCheck() {
     let runId = -1
     try {
-      const response = await this.octokit.checks.create({
-        name: this.name,
-        head_sha: this.opts.prSha,
-        repo: this.opts.repoName,
-        owner: this.opts.repoOwner,
-        started_at: new Date().toISOString(),
-        status: 'in_progress'
-      })
+      const response = await this.octokit.request(
+        'POST /repos/{owner}/{repo}/check-runs',
+        {
+          owner: 'octocat',
+          repo: 'hello-world',
+          name: 'name',
+          head_sha: 'head_sha',
+          started_at: new Date().toISOString(),
+          status: 'in_progress'
+        }
+      )
       console.log('startGitHubCheck', response)
       runId = response.data.id
     } catch (e) {
