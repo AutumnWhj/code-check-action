@@ -13,3 +13,4 @@ jobs:
         id: code-check
         with:
           githubToken: ${{ secrets.ACCESS_TOKEN }}
+          eslintConfig: .eslintrc.json
