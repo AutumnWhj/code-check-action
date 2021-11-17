@@ -5,8 +5,7 @@ import {
   ReportCounts
 } from '../type/eslint-type'
 
-import eslint from 'eslint'
-
+import {ESLint} from 'eslint'
 import {error as logError} from '@actions/core'
 import path from 'path'
 
@@ -24,16 +23,16 @@ class EslintRunner {
 
   async run() {
     console.log('this.checkRunID', this.checkRunID)
-    const report = this.runEslintCheck()!
+    const report = await this.runEslintCheck()!
     console.log('report', report)
 
-    const {success, annotations, counts} = this.prepareAnnotation(report)
-    console.log('counts: ', counts)
-    console.log('annotations: ', annotations)
-    console.log('success: ', success)
+    // const {success, annotations, counts} = this.prepareAnnotation(report)
+    // console.log('counts: ', counts)
+    // console.log('annotations: ', annotations)
+    // console.log('success: ', success)
     // if annotations are too large, split them into check-updates
-    const restOfAnnotation = await this.handleAnnotations(annotations, counts)
-    console.log('restOfAnnotation', restOfAnnotation)
+    // const restOfAnnotation = await this.handleAnnotations(annotations, counts)
+    // console.log('restOfAnnotation', restOfAnnotation)
   }
 
   private async handleAnnotations(
@@ -60,19 +59,20 @@ class EslintRunner {
     return path.resolve(this.opts.repoPath, location)
   }
 
-  private runEslintCheck() {
+  private async runEslintCheck() {
     const cliOptions = {
       useEslintrc: false,
-      configFile: this.pathRelative(this.opts.eslintConfig),
+      overrideConfigFile: this.pathRelative(this.opts.eslintConfig),
       extensions: this.opts.eslintExtensions,
       cwd: this.opts.repoPath
     }
 
     try {
-      const cli = new eslint.CLIEngine(cliOptions)
+      const eslint = new ESLint(cliOptions)
+
       const lintFiles = this.opts.eslintFiles.map(this.pathRelative)
 
-      return cli.executeOnFiles(lintFiles)
+      return await eslint.lintFiles(lintFiles)
     } catch (e) {
       const error: any = e
       exitWithError(error.message)
@@ -81,12 +81,11 @@ class EslintRunner {
     }
   }
 
-  private prepareAnnotation(report: eslint.CLIEngine.LintReport): any {
+  private prepareAnnotation(results: ESLint.LintResult[]): any {
     // 0 - no error, 1 - warning, 2 - error
     const reportLevel = ['', 'warning', 'failure']
 
     const githubAnnotations: Array<GitHubAnnotation> = []
-    const {results} = report
     for (const iterator of results) {
       const {filePath, messages} = iterator
       const repoPath = filePath.replace(`${this.opts.repoPath}/`, '')
@@ -104,15 +103,15 @@ class EslintRunner {
 
         githubAnnotations.push(annotation)
       }
-
-      return {
-        success: report.errorCount === 0,
-        annotations: githubAnnotations,
-        counts: {
-          error: report.errorCount,
-          warning: report.warningCount
-        }
-      }
+      return results
+      // return {
+      //   success: results.errorCount === 0,
+      //   annotations: githubAnnotations,
+      //   counts: {
+      //     error: results.errorCount,
+      //     warning: results.warningCount
+      //   }
+      // }
     }
   }
 }

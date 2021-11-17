@@ -1,7 +1,7 @@
 import {ActionOptionsType, EslintOptionsType} from '../type/eslint-type'
 import EslintRunner from '../runner/eslint-runner'
 
-const {GITHUB_REPOSITORY, GITHUB_WORKSPACE, GITHUB_SHA} = process.env
+const {GITHUB_REPOSITORY = '', GITHUB_WORKSPACE, GITHUB_SHA} = process.env
 
 export const parseInputArray = (input: string) => {
   return input
