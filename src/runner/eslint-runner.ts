@@ -74,7 +74,9 @@ class EslintRunner {
     try {
       const eslint = new ESLint(cliOptions)
 
-      const lintFiles = eslintFiles.map(this.pathRelative)
+      const lintFiles = eslintFiles.map(location =>
+        path.resolve(repoPath, location)
+      )
       console.log('lintFiles: ', lintFiles)
 
       return await eslint.lintFiles(lintFiles)
