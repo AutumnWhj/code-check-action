@@ -62,7 +62,8 @@ class EslintRunner {
   }
 
   private async runEslintCheck() {
-    const {eslintConfig, eslintExtensions, repoPath} = this.opts || {}
+    const {eslintConfig, eslintExtensions, repoPath, eslintFiles} =
+      this.opts || {}
     const cliOptions = {
       useEslintrc: false,
       overrideConfigFile: this.pathRelative(eslintConfig),
@@ -73,7 +74,7 @@ class EslintRunner {
     try {
       const eslint = new ESLint(cliOptions)
 
-      const lintFiles = this.opts.eslintFiles.map(this.pathRelative)
+      const lintFiles = eslintFiles.map(this.pathRelative)
       console.log('lintFiles: ', lintFiles)
 
       return await eslint.lintFiles(lintFiles)
