@@ -16,3 +16,4 @@ jobs:
         with:
           githubToken: ${{ secrets.ACCESS_TOKEN }}
           eslintConfig: .eslintrc.json
+          eslintExt: ts
