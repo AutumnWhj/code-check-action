@@ -57,21 +57,24 @@ class EslintRunner {
   }
 
   private pathRelative(location: string) {
-    return path.resolve(this.opts.repoPath, location)
+    const {repoPath} = this.opts || {}
+    return path.resolve(repoPath, location)
   }
 
   private async runEslintCheck() {
+    const {eslintConfig, eslintExtensions, repoPath} = this.opts || {}
     const cliOptions = {
       useEslintrc: false,
-      overrideConfigFile: this.pathRelative(this.opts.eslintConfig),
-      extensions: this.opts.eslintExtensions,
-      cwd: this.opts.repoPath
+      overrideConfigFile: this.pathRelative(eslintConfig),
+      extensions: eslintExtensions,
+      cwd: repoPath
     }
-
+    console.log('runEslintCheck----', cliOptions)
     try {
       const eslint = new ESLint(cliOptions)
 
       const lintFiles = this.opts.eslintFiles.map(this.pathRelative)
+      console.log('lintFiles: ', lintFiles)
 
       return await eslint.lintFiles(lintFiles)
     } catch (e) {
