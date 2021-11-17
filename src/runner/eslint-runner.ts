@@ -10,15 +10,16 @@ import {error as logError} from '@actions/core'
 import path from 'path'
 
 class EslintRunner {
-  private name = 'Eslint Run'
+  name = 'Eslint Run'
 
-  private opts: ActionOptionsType
+  opts: ActionOptionsType
 
   checkRunID: number = -1
 
   constructor(githubToken: string, options: ActionOptionsType) {
-    console.log('22222', githubToken)
+    console.log('22222', githubToken, options)
     this.opts = options
+    console.log('this.opts: ', this.opts)
   }
 
   async run() {
