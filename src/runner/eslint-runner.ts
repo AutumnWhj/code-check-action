@@ -24,16 +24,16 @@ class EslintRunner {
 
   async run() {
     console.log('this.checkRunID', this.checkRunID)
-    const report = await this.runEslintCheck()!
+    const report: any = await this.runEslintCheck()!
     console.log('report', report)
 
-    // const {success, annotations, counts} = this.prepareAnnotation(report)
-    // console.log('counts: ', counts)
-    // console.log('annotations: ', annotations)
-    // console.log('success: ', success)
+    const {success, annotations, counts} = this.prepareAnnotation(report)
+    console.log('counts: ', counts)
+    console.log('annotations: ', annotations)
+    console.log('success: ', success)
     // if annotations are too large, split them into check-updates
-    // const restOfAnnotation = await this.handleAnnotations(annotations, counts)
-    // console.log('restOfAnnotation', restOfAnnotation)
+    const restOfAnnotation = await this.handleAnnotations(annotations, counts)
+    console.log('restOfAnnotation', restOfAnnotation)
   }
 
   private async handleAnnotations(
@@ -91,12 +91,18 @@ class EslintRunner {
   private prepareAnnotation(results: ESLint.LintResult[]): any {
     // 0 - no error, 1 - warning, 2 - error
     const reportLevel = ['', 'warning', 'failure']
-
+    let errorNum = 0
+    let warningNum = 0
     const githubAnnotations: Array<GitHubAnnotation> = []
     for (const iterator of results) {
-      const {filePath, messages} = iterator
+      const {filePath, messages, errorCount, warningCount} = iterator
       const repoPath = filePath.replace(`${this.opts.repoPath}/`, '')
-
+      if (errorCount) {
+        errorNum++
+      }
+      if (warningCount) {
+        warningNum++
+      }
       for (const msg of messages) {
         const {ruleId, message, severity, endLine, line} = msg
 
@@ -110,15 +116,14 @@ class EslintRunner {
 
         githubAnnotations.push(annotation)
       }
-      return results
-      // return {
-      //   success: results.errorCount === 0,
-      //   annotations: githubAnnotations,
-      //   counts: {
-      //     error: results.errorCount,
-      //     warning: results.warningCount
-      //   }
-      // }
+    }
+    return {
+      success: errorNum === 0,
+      annotations: githubAnnotations,
+      counts: {
+        error: errorNum,
+        warning: warningNum
+      }
     }
   }
 }
