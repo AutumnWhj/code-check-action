@@ -1,22 +1,22 @@
 {
   "plugins": ["jest", "@typescript-eslint"],
-  // "extends": ["plugin:github/recommended"],
-  // "parser": "@typescript-eslint/parser",
-  // "parserOptions": {
-  //   "ecmaVersion": 9,
-  //   "sourceType": "module",
-  //   "project": "./tsconfig.json"
-  // },
+  "extends": ["plugin:github/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 9,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
   "rules": {
     "no-console": "warn",
     "no-debugger": "warn",
     "camelcase": "off",
-    "filenames/match-regex": "off"
-    // "@typescript-eslint/camelcase": ["off"],
-    // "@typescript-eslint/no-empty-function": ["warn"],
-    // "@typescript-eslint/no-this-alias": ["warn"],
-    // "@typescript-eslint/no-unused-vars": ["error"],
-    // "@typescript-eslint/no-explicit-any": ["off"]
+    "filenames/match-regex": "off",
+    "@typescript-eslint/camelcase": ["off"],
+    "@typescript-eslint/no-empty-function": ["warn"],
+    "@typescript-eslint/no-this-alias": ["warn"],
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/no-explicit-any": ["off"]
   },
   "env": {
     "node": true,
