@@ -1,6 +1,11 @@
 // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
 import {debug, getInput, setFailed} from '@actions/core'
 import {parseInputArray, runEslint} from './check/eslint'
+import {context} from '@actions/github'
+
+// const pushPayload: any = github.context.payload
+// const ref = github.context.ref
+console.log('github.context', context)
 
 async function run(): Promise<void> {
   try {

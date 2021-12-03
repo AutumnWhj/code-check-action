@@ -4,13 +4,14 @@ on: # rebuild any PRs and main branch changes
     branches:
       - master
       - 'releases/*'
+  pull_request:
+    branches:
+      - master
 jobs:
   test: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install dependencies
-        uses: bahmutov/npm-install@v1
       - uses: ./
         id: code-check
         with:

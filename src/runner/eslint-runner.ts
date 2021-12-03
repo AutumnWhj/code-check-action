@@ -4,7 +4,7 @@ import {
   GitHubAnnotationLevel,
   ReportCounts
 } from '../type/eslint-type'
-
+// import { updatePullRequest  } from '../utils'
 import {ESLint} from 'eslint'
 import {error as logError} from '@actions/core'
 import path from 'path'
@@ -34,6 +34,7 @@ class EslintRunner {
     // if annotations are too large, split them into check-updates
     const restOfAnnotation = await this.handleAnnotations(annotations, counts)
     console.log('restOfAnnotation', restOfAnnotation)
+    // Update a pull request
   }
 
   private async handleAnnotations(
