@@ -22,7 +22,7 @@ export const runEslint = (
     repoPath: GITHUB_WORKSPACE!,
     prSha: GITHUB_SHA!
   }
-  console.log('runEslint----', options)
+  console.log('runEslint1----', options)
   const action = new EslintRunner(githubToken, options)
   action.run()
 }
