@@ -10,7 +10,7 @@ export const updatePullRequest = async (params: any): Promise<void> => {
   const repository = `${repoName}/${repoOwner}`
   try {
     await axios({
-      method: 'POST',
+      method: 'PATCH',
       headers: {
         Accept: 'application/vnd.github.v3+json',
         'content-type': 'application/json',
