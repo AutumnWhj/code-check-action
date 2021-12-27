@@ -2,13 +2,24 @@ import axios from 'axios'
 const getUpdatePrUrl = (repository: string, number: number): string => {
   return `https://api.github.com/repos/${repository}/pulls/${number}`
 }
+const getCommentsPrUrl = (repository: string, number: number): string => {
+  return `https://api.github.com/repos/${repository}/pulls/${number}/comments`
+}
+// https://github.com/AutumnWhj/code-check-action/pull/19
 export const updatePullRequest = async (params: any): Promise<void> => {
-  const {options, annotation} = params || {}
+  const {options, eslintResults} = params || {}
   console.log('updatePullRequest--options: ', options)
-  console.log('annotation: ', annotation)
+  console.log('eslintResults: ', eslintResults)
+  const {
+    error: errorFiles,
+    warning: warningFiles,
+    annotation
+  } = eslintResults || {}
   const {githubToken, pullNumber, repoName, repoOwner} = options
   const repository = `${repoOwner}/${repoName}`
   console.log('repository: ', repository)
+  const prState = errorFiles > 0 ? 'close' : 'open'
+  const resultBody = `本次Eslint检查结果：出现error的文件有${errorFiles}个，warning的文件有${warningFiles}个`
   try {
     await axios({
       method: 'PATCH',
@@ -20,19 +31,37 @@ export const updatePullRequest = async (params: any): Promise<void> => {
       url: getUpdatePrUrl(repository, pullNumber),
       data: {
         title: `🤔项目${repository}PR：Eslint检查：`,
-        body: '测试测试测试/n测试测试测试',
-        state: 'close'
+        body: resultBody,
+        state: prState
       }
     })
-    // const result = {
-    //   msgtype: 'text',
-    //   text: {
-    //     content: `🤔项目${repository}：【${headBranch}】分支合并到【${baseBranch}】有新PR，请及时处理~`,
-    //     mentioned_mobile_list: ['@all']
-    //   }
-    // }
+    if (warningFiles > 0) {
+      const commentsPrUrl = getCommentsPrUrl(repository, pullNumber)
+      await commentPullRequest({commentsPrUrl, githubToken, annotation})
+    }
     // await sendMsgToWeChat({result, webHook: wechatKey})
   } catch (error) {
     console.error('updatePullRequest--error', error)
+  }
+}
+export const commentPullRequest = async (params: any): Promise<void> => {
+  const {githubToken, commentsPrUrl, annotation} = params || {}
+  console.log('commentPullRequest: ', annotation)
+  try {
+    await axios({
+      method: 'POST',
+      headers: {
+        Accept: 'application/vnd.github.v3+json',
+        'content-type': 'application/json',
+        Authorization: `Bearer ${githubToken}`
+      },
+      url: commentsPrUrl,
+      data: {
+        body: '测试测试测试/n测试测试测试',
+        start_line: 10
+      }
+    })
+  } catch (error) {
+    console.error('commentPullRequest--error', error)
   }
 }

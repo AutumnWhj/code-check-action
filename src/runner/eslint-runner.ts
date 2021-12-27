@@ -39,7 +39,10 @@ class EslintRunner {
     // Update a pull request
     const {pullNumber, repoName, repoOwner} = this.opts
     await updatePullRequest({
-      annotation: restOfAnnotation,
+      eslintResults: {
+        ...counts,
+        annotation: restOfAnnotation
+      },
       options: {
         githubToken: this.githubToken,
         pullNumber,
