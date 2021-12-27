@@ -15,7 +15,7 @@ export const updatePullRequest = async (params: any): Promise<void> => {
     warning: warningFiles,
     annotation
   } = eslintResults || {}
-  const {githubToken, pullNumber, repoName, repoOwner, prSha} = options
+  const {githubToken, pullNumber, repoName, repoOwner, commitSha} = options
   const repository = `${repoOwner}/${repoName}`
   console.log('repository: ', repository)
   const prState = errorFiles > 0 ? 'close' : 'open'
@@ -41,7 +41,7 @@ export const updatePullRequest = async (params: any): Promise<void> => {
         await commentPullRequest({
           commentsPrUrl,
           githubToken,
-          prSha,
+          commitSha,
           annotation: annotation[index]
         })
       }
@@ -52,7 +52,7 @@ export const updatePullRequest = async (params: any): Promise<void> => {
   }
 }
 export const commentPullRequest = async (params: any): Promise<void> => {
-  const {githubToken, commentsPrUrl, prSha, annotation} = params || {}
+  const {githubToken, commentsPrUrl, commitSha, annotation} = params || {}
   console.log('commentPullRequest: ', annotation)
   const {path, start_line, annotation_level, message} = annotation || {}
   const resultBody = `${annotation_level}: ${message}`
@@ -70,7 +70,7 @@ export const commentPullRequest = async (params: any): Promise<void> => {
         path,
         line: start_line,
         start_side: 'RIGHT',
-        commit_id: prSha
+        commit_id: commitSha
       }
     })
   } catch (error) {
