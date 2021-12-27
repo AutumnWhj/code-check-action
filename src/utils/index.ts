@@ -7,7 +7,7 @@ export const updatePullRequest = async (params: any): Promise<void> => {
   console.log('updatePullRequest--options: ', options)
   console.log('annotation: ', annotation)
   const {githubToken, pullNumber, repoName, repoOwner} = options
-  const repository = `${repoName}/${repoOwner}`
+  const repository = `${repoOwner}/${repoName}`
   try {
     await axios({
       method: 'PATCH',
