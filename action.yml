@@ -20,6 +20,6 @@ inputs:
     required: false
     description: 'File extension to run linting on.'
     default: 'js, ts, jsx, tsx'
-# runs:
-#   using: 'node12'
-#   main: 'dist/index.js'
+runs:
+  using: 'node16'
+  main: 'lib/main.js'
