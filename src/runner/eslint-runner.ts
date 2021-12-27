@@ -4,20 +4,22 @@ import {
   GitHubAnnotationLevel,
   ReportCounts
 } from '../type/eslint-type'
-// import { updatePullRequest  } from '../utils'
 import {ESLint} from 'eslint'
+
 import {error as logError} from '@actions/core'
 import path from 'path'
+import {updatePullRequest} from '../utils'
 
 class EslintRunner {
   name = 'Eslint Run'
-
+  githubToken: string
   opts: ActionOptionsType
 
   checkRunID: number = -1
 
   constructor(githubToken: string, options: ActionOptionsType) {
     console.log('22222', githubToken, options)
+    this.githubToken = githubToken
     this.opts = options
     console.log('this.opts: ', this.opts)
   }
@@ -35,6 +37,20 @@ class EslintRunner {
     const restOfAnnotation = await this.handleAnnotations(annotations, counts)
     console.log('restOfAnnotation', restOfAnnotation)
     // Update a pull request
+    const {pullNumber, repoName, repoOwner, commitSha} = this.opts
+    await updatePullRequest({
+      eslintResults: {
+        ...counts,
+        annotation: restOfAnnotation
+      },
+      options: {
+        githubToken: this.githubToken,
+        pullNumber,
+        repoName,
+        repoOwner,
+        commitSha
+      }
+    })
   }
 
   private async handleAnnotations(

@@ -1,5 +1,11 @@
 import {ActionOptionsType, EslintOptionsType} from '../type/eslint-type'
 import EslintRunner from '../runner/eslint-runner'
+import {context} from '@actions/github'
+
+console.log('github.context', context)
+const payload: any = context.payload
+const pullNumber: any = payload.number
+const commitSha: any = payload.after
 
 const {GITHUB_REPOSITORY = '', GITHUB_WORKSPACE, GITHUB_SHA} = process.env
 
@@ -20,7 +26,9 @@ export const runEslint = (
     repoName,
     repoOwner,
     repoPath: GITHUB_WORKSPACE!,
-    prSha: GITHUB_SHA!
+    prSha: GITHUB_SHA!,
+    commitSha,
+    pullNumber
   }
   console.log('runEslint1----', options)
   const action = new EslintRunner(githubToken, options)
