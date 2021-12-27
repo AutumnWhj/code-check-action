@@ -15,7 +15,7 @@ export const updatePullRequest = async (params: any): Promise<void> => {
     warning: warningFiles,
     annotation
   } = eslintResults || {}
-  const {githubToken, pullNumber, repoName, repoOwner} = options
+  const {githubToken, pullNumber, repoName, repoOwner, prSha} = options
   const repository = `${repoOwner}/${repoName}`
   console.log('repository: ', repository)
   const prState = errorFiles > 0 ? 'close' : 'open'
@@ -37,7 +37,14 @@ export const updatePullRequest = async (params: any): Promise<void> => {
     })
     if (warningFiles > 0) {
       const commentsPrUrl = getCommentsPrUrl(repository, pullNumber)
-      await commentPullRequest({commentsPrUrl, githubToken, annotation})
+      for (const item in annotation) {
+        await commentPullRequest({
+          commentsPrUrl,
+          githubToken,
+          prSha,
+          annotation: item
+        })
+      }
     }
     // await sendMsgToWeChat({result, webHook: wechatKey})
   } catch (error) {
@@ -45,8 +52,10 @@ export const updatePullRequest = async (params: any): Promise<void> => {
   }
 }
 export const commentPullRequest = async (params: any): Promise<void> => {
-  const {githubToken, commentsPrUrl, annotation} = params || {}
+  const {githubToken, commentsPrUrl, prSha, annotation} = params || {}
   console.log('commentPullRequest: ', annotation)
+  const {path, start_line, annotation_level, message} = annotation || {}
+  const resultBody = `${annotation_level}: ${message}`
   try {
     await axios({
       method: 'POST',
@@ -57,8 +66,11 @@ export const commentPullRequest = async (params: any): Promise<void> => {
       },
       url: commentsPrUrl,
       data: {
-        body: '测试测试测试/n测试测试测试',
-        start_line: 10
+        body: resultBody,
+        path,
+        line: start_line,
+        start_side: 'RIGHT',
+        commit_id: prSha
       }
     })
   } catch (error) {

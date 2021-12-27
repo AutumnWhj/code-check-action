@@ -37,7 +37,7 @@ class EslintRunner {
     const restOfAnnotation = await this.handleAnnotations(annotations, counts)
     console.log('restOfAnnotation', restOfAnnotation)
     // Update a pull request
-    const {pullNumber, repoName, repoOwner} = this.opts
+    const {pullNumber, repoName, repoOwner, prSha} = this.opts
     await updatePullRequest({
       eslintResults: {
         ...counts,
@@ -47,7 +47,8 @@ class EslintRunner {
         githubToken: this.githubToken,
         pullNumber,
         repoName,
-        repoOwner
+        repoOwner,
+        prSha
       }
     })
   }
