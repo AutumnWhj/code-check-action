@@ -8,6 +8,7 @@ export interface ActionOptionsType extends EslintOptionsType {
   repoOwner: string
   repoPath: string
   prSha: string
+  pullNumber: number
 }
 
 export type GitHubAnnotationLevel = 'notice' | 'warning' | 'failure'

@@ -3,8 +3,11 @@ const getUpdatePrUrl = (repository: string, number: number): string => {
   return `https://api.github.com/repos/${repository}/pulls/${number}`
 }
 export const updatePullRequest = async (params: any): Promise<void> => {
-  const {repository, githubToken, headBranch, baseBranch} = params
-
+  const {options, annotation} = params || {}
+  console.log('updatePullRequest--options: ', options)
+  console.log('annotation: ', annotation)
+  const {githubToken, pullNumber, repoName, repoOwner} = options
+  const repository = `${repoName}/${repoOwner}`
   try {
     await axios({
       method: 'POST',
@@ -13,11 +16,11 @@ export const updatePullRequest = async (params: any): Promise<void> => {
         'content-type': 'application/json',
         Authorization: `Bearer ${githubToken}`
       },
-      url: getUpdatePrUrl(repository, 100),
+      url: getUpdatePrUrl(repository, pullNumber),
       data: {
-        title: `🤔项目${repository}PR：【${headBranch}】分支合并到【${baseBranch}】`,
-        base: baseBranch,
-        head: headBranch
+        title: `🤔项目${repository}PR：Eslint检查：`,
+        body: '测试测试测试/n测试测试测试',
+        state: 'close'
       }
     })
     // const result = {
@@ -29,6 +32,6 @@ export const updatePullRequest = async (params: any): Promise<void> => {
     // }
     // await sendMsgToWeChat({result, webHook: wechatKey})
   } catch (error) {
-    console.error('createPullRequest--error', error)
+    console.error('updatePullRequest--error', error)
   }
 }
