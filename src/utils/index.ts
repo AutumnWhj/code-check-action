@@ -37,12 +37,12 @@ export const updatePullRequest = async (params: any): Promise<void> => {
     })
     if (warningFiles > 0) {
       const commentsPrUrl = getCommentsPrUrl(repository, pullNumber)
-      for (const item in annotation) {
+      for (const index in annotation) {
         await commentPullRequest({
           commentsPrUrl,
           githubToken,
           prSha,
-          annotation: item
+          annotation: annotation[index]
         })
       }
     }
